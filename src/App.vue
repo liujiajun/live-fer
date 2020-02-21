@@ -1,28 +1,52 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div>
+      <div class="videoPanel">
+        <VideoInput class="video" @onResult="onResult"/>
+      </div>
+
+      <Chart class="chart" :result="result" :options="chartOptions"></Chart>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
+import VideoInput from "@/components/VideoInput";
+import Chart from "@/components/Chart";
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Chart,
+    VideoInput
+  },
+  data() {
+    return {
+      result: null,
+      chartOptions: {
+        animation: false,
+      }
+    }
+  },
+  methods: {
+    onResult (value) {
+      this.result = value;
+    }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  .videoPanel {
+    /*width: 100%;*/
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  .chart {
+    position: relative;
+    top: 300px;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
 </style>
