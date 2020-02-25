@@ -16,7 +16,7 @@
                 stream: null,
                 videoEl: null,
                 canvas: null,
-                cachedResults: getFixedSizeArray(10)
+                cachedResults: getFixedSizeArray(8)
             }
         },
         methods: {
