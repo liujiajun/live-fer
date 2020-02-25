@@ -2,6 +2,7 @@
     <div class="wrapper">
         <video id="video" autoplay muted playsinline/>
         <canvas id="overlay"/>
+        <span id="loading" :v-if="loading">Loading</span>
     </div>
 </template>
 
@@ -13,6 +14,7 @@
         name: "VideoInput",
         data() {
             return {
+                loading: true,
                 stream: null,
                 videoEl: null,
                 canvas: null,
@@ -38,6 +40,7 @@
             }
         },
         async mounted() {
+            this.loading = true;
             this.stream = await navigator.mediaDevices.getUserMedia({ video: {} });
             this.videoEl = document.getElementById("video");
             this.videoEl.srcObject = this.stream;
@@ -47,7 +50,7 @@
             await faceapi.nets.faceExpressionNet.loadFromUri('/model/emotion-classifier/model.json');
             // eslint-disable-next-line no-console
             console.log("Finish loading");
-
+            this.loading = false;
             this.detect();
         },
         computed: {
@@ -87,6 +90,10 @@
 
     #video {
         position: absolute;
+        width: 100%;
+    }
+
+    #loading {
         width: 100%;
     }
 
