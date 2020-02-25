@@ -2,16 +2,10 @@
   <div id="app">
     <div>
       <div class="videoPanel">
-        <VideoInput class="video" @onResult="onResult"/>
+        <VideoInput class="video" @onResult="onResult" @onLoaded="onLoaded"/>
       </div>
-      <div class="display">
-        <Chart class="chart" :result="result" :options="chartOptions"></Chart>
-        <div class="">
-          <label class="switch">
-            <input type="checkbox">
-            <span class="slider round"></span>
-          </label>
-        </div>
+      <div :style="{'position': 'relative', 'margin': '0 auto', 'top': this.top}">
+        <Chart class="chart" :result="result" :options="chartOptions"/>
       </div>
     </div>
   </div>
@@ -24,7 +18,6 @@
   export default {
     name: 'app',
     components: {
-      // eslint-disable-next-line vue/no-unused-components
       Chart,
       VideoInput
     },
@@ -34,12 +27,18 @@
         result: null,
         chartOptions: {
           animation: false,
-        }
+        },
+        top: '10px'
       }
     },
     methods: {
       onResult (value) {
         this.result = value;
+      },
+      onLoaded (height) {
+        // eslint-disable-next-line no-console
+        console.log(height);
+        this.top = height + 100 +  'px';
       }
     }
   }
@@ -47,19 +46,15 @@
 
 <style>
   .videoPanel {
-    /*width: 100%;*/
     max-width: 400px;
     margin: 0 auto;
   }
   .display {
     position: relative;
-    top: 350px;
+    /*top: 350px;*/
     margin: 0 auto;
   }
-  /*.switch {*/
-  /*  position: relative;*/
-  /*  margin: 0 auto;*/
-  /*}*/
+
   .chart {
     width: 100%;
     max-width: 300px;

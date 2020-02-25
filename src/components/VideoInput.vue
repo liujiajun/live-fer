@@ -1,6 +1,6 @@
 <template>
-    <div class="wrapper">
-        <video id="video" autoplay muted playsinline/>
+    <div class="wrapper" ref="outer">
+        <video id="video" autoplay muted playsinline ref="videoPlayer"/>
         <canvas id="overlay"/>
         <span id="loading" :v-if="loading">Loading</span>
     </div>
@@ -46,11 +46,14 @@
             this.videoEl.srcObject = this.stream;
             this.canvas = document.getElementById("overlay");
 
+            this.$emit("onLoaded", this.$refs.videoPlayer.offsetHeight);
+
             await faceapi.nets.tinyFaceDetector.loadFromUri('/model/face-detector/model.json');
             await faceapi.nets.faceExpressionNet.loadFromUri('/model/emotion-classifier/model.json');
             // eslint-disable-next-line no-console
             console.log("Finish loading");
             this.loading = false;
+            //eslint-disable-next-line no-console
             this.detect();
         },
         computed: {
