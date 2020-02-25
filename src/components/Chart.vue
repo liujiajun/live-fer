@@ -21,7 +21,7 @@
                     "disgusted": "green",
                     "fearful": "indigo",
                     "angry": "blue",
-                    "sad": "pruple"
+                    "sad": "purple"
                 };
 
                 let items = Object.keys(this.result).map((key) => {
