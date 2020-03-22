@@ -9,12 +9,14 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "^1.5.1",
+    "bootstrap-vue": "^2.7.0",
     "chart.js": "^2.9.3",
     "core-js": "^3.4.4",
     "face-api.js": "^0.22.0",
     "get-image-data": "^4.1.0",
     "vue": "^2.6.10",
     "vue-chartjs": "^3.5.0",
+    "vue-loading-overlay": "^3.3.2",
     "vue-web-cam": "^1.9.0",
     "vuetify": "^2.2.11"
   },

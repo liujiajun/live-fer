@@ -54,11 +54,10 @@
 
             await faceapi.nets.tinyFaceDetector.loadFromUri('/model/face-detector/model.json');
             await faceapi.nets.faceExpressionNet.loadFromUri('/model/emotion-classifier/model.json');
-            // eslint-disable-next-line no-console
-            console.log("Finish loading");
             this.loading = false;
             this.detect();
-            this.$emit("onLoaded");
+            // eslint-disable-next-line no-console
+            console.log("Finish loading");
         },
         computed: {
             pooledResult: function() {

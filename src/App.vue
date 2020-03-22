@@ -1,16 +1,16 @@
 <template>
   <div id="app">
-    <div>
+    <v-overlay :value="loading">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
+    <v-card>
       <div class="videoPanel">
-        <VideoInput class="video" @onResult="onResult" @onLoaded="onLoaded"/>
+        <VideoInput class="video" @onResult="onResult"/>
       </div>
-    </div>
-    <div class="chart">
+    </v-card>
+    <div class="chart" v-show="!loading">
       <Chart :result="result" :options="chartOptions"/>
     </div>
-    <web-cam>
-
-    </web-cam>
   </div>
 </template>
 
@@ -23,7 +23,7 @@
     name: 'app',
     components: {
       Chart,
-      VideoInput
+      VideoInput,
     },
     data() {
       return {
@@ -34,15 +34,15 @@
           maintainAspectRatio: false,
           responsive:true
         },
+        loading: true,
+        fullPage: true
       }
     },
     methods: {
       onResult (value) {
+        this.loading = false;
         this.result = value;
       },
-      onLoaded () {
-
-      }
     }
   }
 </script>
@@ -55,6 +55,11 @@
   .chart {
     height: 200px;
     width: 300px;
+    margin: 0 auto;
+  }
+
+  .loading {
+    width: 100%;
     margin: 0 auto;
   }
 
