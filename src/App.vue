@@ -3,11 +3,11 @@
     <v-overlay :value="loading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <v-card>
+    <v-responsive max-height="300px">
       <div class="videoPanel">
         <VideoInput class="video" @onResult="onResult"/>
       </div>
-    </v-card>
+    </v-responsive>
     <div class="chart" v-show="!loading">
       <Chart :result="result" :options="chartOptions"/>
     </div>
