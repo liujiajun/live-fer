@@ -7,11 +7,12 @@
       <v-card
               class="mx-auto"
               max-width="400">
+        <v-card-title class="text-center">Live Facial Expression Recognition</v-card-title>
         <v-row dense>
           <v-col cols="12">
             <v-card max-height="300px">
               <div class="videoPanel">
-                <VideoInput class="video" @onResult="onResult"/>
+                <VideoInput class="video" :sensitivity="sensitivity" @onResult="onResult"/>
               </div>
             </v-card>
           </v-col>
@@ -22,13 +23,12 @@
               <Chart :result="result" :options="chartOptions"/>
             </v-card>
           </v-col>
-        </v-row>
-        <v-row dense>
+
           <v-col cols="12">
             <v-slider
                     v-model="sensitivity"
-                    min="0"
-                    max="100"
+                    min="1"
+                    max="15"
                     label="Sensitivity"
             ></v-slider>
           </v-col>
@@ -59,7 +59,7 @@
           responsive:true
         },
         loading: true,
-        sensitivity: 50
+        sensitivity: 7
       }
     },
     methods: {

@@ -18,6 +18,9 @@
 
     export default {
         name: "VideoInput",
+        props: {
+            sensitivity: Number
+        },
         data() {
             return {
                 loading: true,
@@ -79,6 +82,11 @@
                         return total
                     }
                 }, initialValue);
+            }
+        },
+        watch: {
+            sensitivity: function (val) {
+                this.cachedResults = getFixedSizeArray(val);
             }
         }
     };
