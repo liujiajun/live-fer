@@ -52,6 +52,7 @@
             this.videoEl.srcObject = this.stream;
             this.canvas = document.getElementById("overlay");
 
+            // eslint-disable-next-line no-console
             await faceapi.nets.tinyFaceDetector.loadFromUri('/model/face-detector/model.json');
             await faceapi.nets.faceExpressionNet.loadFromUri('/model/emotion-classifier/model.json');
             this.loading = false;

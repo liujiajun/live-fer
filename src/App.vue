@@ -4,8 +4,10 @@
       <v-overlay :value="loading">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
-      <v-card max-width="400">
-        <v-row dense align="center">
+      <v-card
+              class="mx-auto"
+              max-width="400">
+        <v-row dense>
           <v-col cols="12">
             <v-card max-height="300px">
               <div class="videoPanel">
@@ -19,6 +21,16 @@
             <v-card outlined v-show="!loading">
               <Chart :result="result" :options="chartOptions"/>
             </v-card>
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col cols="12">
+            <v-slider
+                    v-model="sensitivity"
+                    min="0"
+                    max="100"
+                    label="Sensitivity"
+            ></v-slider>
           </v-col>
         </v-row>
       </v-card>
@@ -47,7 +59,7 @@
           responsive:true
         },
         loading: true,
-        fullPage: true
+        sensitivity: 50
       }
     },
     methods: {
