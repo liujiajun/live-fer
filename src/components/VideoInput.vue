@@ -9,7 +9,6 @@
                ref="videoPlayer"
         />
         <canvas id="overlay"/>
-<!--        <span id="loading" :v-if="loading">Loading</span>-->
     </div>
 </template>
 
@@ -47,21 +46,19 @@
             }
         },
         async mounted() {
-            this.loading = true;
+            //this.loading = true;
             this.stream = await navigator.mediaDevices.getUserMedia({ video: {} });
             this.videoEl = document.getElementById("video");
             this.videoEl.srcObject = this.stream;
             this.canvas = document.getElementById("overlay");
-
-            this.$emit("onLoaded", this.$refs.videoPlayer.getBoundingClientRect().height);
 
             await faceapi.nets.tinyFaceDetector.loadFromUri('/model/face-detector/model.json');
             await faceapi.nets.faceExpressionNet.loadFromUri('/model/emotion-classifier/model.json');
             // eslint-disable-next-line no-console
             console.log("Finish loading");
             this.loading = false;
-            //eslint-disable-next-line no-console
             this.detect();
+            this.$emit("onLoaded");
         },
         computed: {
             pooledResult: function() {
@@ -94,15 +91,8 @@
     #overlay {
         position: absolute;
         width: 100%;
+        height: 300px;
         top: 0;
         left: 0;
     }
-
-    #video {
-    }
-
-    #loading {
-        width: 100%;
-    }
-
 </style>

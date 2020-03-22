@@ -15,6 +15,7 @@
     "get-image-data": "^4.1.0",
     "vue": "^2.6.10",
     "vue-chartjs": "^3.5.0",
+    "vue-web-cam": "^1.9.0",
     "vuetify": "^2.2.11"
   },
   "devDependencies": {

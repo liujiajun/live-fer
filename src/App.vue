@@ -8,6 +8,9 @@
     <div class="chart">
       <Chart :result="result" :options="chartOptions"/>
     </div>
+    <web-cam>
+
+    </web-cam>
   </div>
 </template>
 
@@ -15,6 +18,7 @@
 
   import VideoInput from "@/components/VideoInput";
   import Chart from "@/components/Chart";
+
   export default {
     name: 'app',
     components: {
@@ -30,15 +34,14 @@
           maintainAspectRatio: false,
           responsive:true
         },
-        top: '10px'
       }
     },
     methods: {
       onResult (value) {
         this.result = value;
       },
-      onLoaded (height) {
-        this.top = height + 100 +  'px';
+      onLoaded () {
+
       }
     }
   }
