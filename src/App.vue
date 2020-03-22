@@ -1,16 +1,28 @@
 <template>
   <div id="app">
-    <v-overlay :value="loading">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
-    <v-responsive max-height="300px">
-      <div class="videoPanel">
-        <VideoInput class="video" @onResult="onResult"/>
-      </div>
-    </v-responsive>
-    <div class="chart" v-show="!loading">
-      <Chart :result="result" :options="chartOptions"/>
-    </div>
+    <v-container fluid>
+      <v-overlay :value="loading">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay>
+      <v-card max-width="400">
+        <v-row dense align="center">
+          <v-col cols="12">
+            <v-card max-height="300px">
+              <div class="videoPanel">
+                <VideoInput class="video" @onResult="onResult"/>
+              </div>
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col cols="12">
+            <v-card outlined v-show="!loading">
+              <Chart :result="result" :options="chartOptions"/>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-container>
   </div>
 </template>
 
