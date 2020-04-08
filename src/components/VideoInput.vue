@@ -86,7 +86,7 @@
         },
         watch: {
             sensitivity: function (val) {
-                this.cachedResults = getFixedSizeArray(val);
+                this.cachedResults = getFixedSizeArray(16 - val);
             }
         }
     };
