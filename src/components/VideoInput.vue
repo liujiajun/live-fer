@@ -1,12 +1,12 @@
 <template>
     <div class="wrapper" ref="outer">
-        <video id="video"
-               autoplay
+        <video autoplay
+               height="300"
+               id="video"
                muted
                playsinline
-               width="100%"
-               height="300"
                ref="videoPlayer"
+               width="100%"
         />
         <canvas id="overlay"/>
     </div>
@@ -14,7 +14,7 @@
 
 <script>
     import * as faceapi from "face-api.js";
-    import * as tf from '@tensorflow/tfjs';
+    import * as tf from "@tensorflow/tfjs";
     import getFixedSizeArray from "@/utils/fixed-size-array";
 
     export default {
@@ -31,38 +31,39 @@
                 cachedResults: getFixedSizeArray(8),
                 started: null,
                 model: null
-            }
+            };
         },
         methods: {
             detect: async function () {
-                if(this.videoEl.paused || this.videoEl.ended || !(faceapi.nets.tinyFaceDetector.params))
+                if (this.videoEl.paused || this.videoEl.ended || !(faceapi.nets.tinyFaceDetector.params))
                     return setTimeout(() => this.detect());
 
-                if(this.started) {
-                      let res;
-                      const currentFrame = this.getScreenshot(document.getElementById("webcam"));
-                      const detections = await faceapi.detectAllFaces(
-                              currentFrame,
-                              new faceapi.TinyFaceDetectorOptions()
-                      );
-                      if (detections) {
+                if (this.started) {
+                    let res;
+                    const currentFrame = this.getScreenshot(document.getElementById("webcam"));
+                    const detections = await faceapi.detectAllFaces(
+                        currentFrame,
+                        new faceapi.TinyFaceDetectorOptions()
+                    );
+                    if (detections) {
                         const croppedFaces = await faceapi.extractFaces(currentFrame, detections);
                         if (croppedFaces[0]) {
-                          const croppedFaceResized = tf.image.resizeBilinear(tf.browser.fromPixels(croppedFaces[0], 1),
-                                                                        [48, 48]
-                          ).reshape([1, 48, 48, 1]);
-                          res = this.model.predict(croppedFaceResized).reshape([7]);
-                          this.cachedResults.push(res);
-                          this.$emit("onResult", this.pooledResult);
+                            // Predict using tensorflow.js
+                            const croppedFaceResized = tf.image.resizeBilinear(tf.browser.fromPixels(croppedFaces[0], 1),
+                                [48, 48]
+                            ).reshape([1, 48, 48, 1]);
+                            res = this.model.predict(croppedFaceResized).reshape([7]);
+                            this.cachedResults.push(res);
+                            this.$emit("onResult", this.pooledResult);
                         }
-                      }
+                    }
                 } else {
                     this.start();
                 }
 
                 setTimeout(() => this.detect());
             },
-            start: async function() {
+            start: async function () {
                 const options = new faceapi.TinyFaceDetectorOptions();
                 const result = await faceapi.detectSingleFace(this.videoEl, options).withFaceExpressions();
                 if (result) {
@@ -75,18 +76,18 @@
             }
         },
         async mounted() {
-            this.stream = await navigator.mediaDevices.getUserMedia({ video: {} });
+            this.stream = await navigator.mediaDevices.getUserMedia({video: {}});
             this.videoEl = document.getElementById("video");
             this.videoEl.srcObject = this.stream;
             this.canvas = document.getElementById("overlay");
 
             try {
-                await faceapi.nets.tinyFaceDetector.loadFromUri('/model/face-detector/model.json');
-                await faceapi.nets.faceExpressionNet.loadFromUri('/model/emotion-classifier/model.json');
-                this.model = await tf.loadLayersModel('/model/emotion-classifier/modelA.json');
+                await faceapi.nets.tinyFaceDetector.loadFromUri("/model/face-detector/model.json");
+                await faceapi.nets.faceExpressionNet.loadFromUri("/model/emotion-classifier/model.json");
+                this.model = await tf.loadLayersModel("/model/emotion-classifier/modelA.json");
             } catch (e) {
                 // eslint-disable-next-line no-console
-                console.log("Error loading models")
+                console.log("Error loading models");
             }
             this.loading = false;
             this.detect();
@@ -94,7 +95,10 @@
             console.log("Finish loading");
         },
         computed: {
-            pooledResult: function() {
+            /*
+            Average pooling
+             */
+            pooledResult: function () {
                 let initialValue = this.cachedResults[0];
                 return this.cachedResults.reduce((total, current, index, array) => {
                     if (index === 0) return initialValue;
@@ -103,13 +107,13 @@
                         total[emotion] += current[emotion];
                     }
 
-                    if (index === array.length-1) {
+                    if (index === array.length - 1) {
                         for (const emotion of Object.keys(total)) {
                             total[emotion] /= array.length;
                         }
                         return total;
                     } else {
-                        return total
+                        return total;
                     }
                 }, initialValue);
             }
