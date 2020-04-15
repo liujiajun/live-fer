@@ -14,6 +14,7 @@
 
 <script>
     import * as faceapi from "face-api.js";
+    import * as tf from '@tensorflow/tfjs';
     import getFixedSizeArray from "@/utils/fixed-size-array";
 
     export default {
@@ -27,7 +28,9 @@
                 stream: null,
                 videoEl: null,
                 canvas: null,
-                cachedResults: getFixedSizeArray(8)
+                cachedResults: getFixedSizeArray(8),
+                started: null,
+                model: null
             }
         },
         methods: {
@@ -36,28 +39,36 @@
                     return setTimeout(() => this.detect());
 
                 const options = new faceapi.TinyFaceDetectorOptions();
-                const result = await faceapi.detectSingleFace(this.videoEl, options).withFaceExpressions();
-                if (result) {
-                    const dims = faceapi.matchDimensions(this.canvas, this.videoEl, true);
-                    const resizedResult = faceapi.resizeResults(result, dims);
-                    faceapi.draw.drawDetections(this.canvas, resizedResult);
-                    this.cachedResults.push(result.expressions);
-                    this.$emit("onResult", this.pooledResult);
+                if(this.started) {
+
+                } else {
+                    const result = await faceapi.detectSingleFace(this.videoEl, options).withFaceExpressions();
+                    if (result) {
+                        const dims = faceapi.matchDimensions(this.canvas, this.videoEl, true);
+                        const resizedResult = faceapi.resizeResults(result, dims);
+                        faceapi.draw.drawDetections(this.canvas, resizedResult);
+                        this.cachedResults.push(result.expressions);
+                        this.$emit("onResult", this.pooledResult);
+                    }
                 }
 
                 setTimeout(() => this.detect());
             }
         },
         async mounted() {
-            //this.loading = true;
             this.stream = await navigator.mediaDevices.getUserMedia({ video: {} });
             this.videoEl = document.getElementById("video");
             this.videoEl.srcObject = this.stream;
             this.canvas = document.getElementById("overlay");
 
-            // eslint-disable-next-line no-console
-            await faceapi.nets.tinyFaceDetector.loadFromUri('/model/face-detector/model.json');
-            await faceapi.nets.faceExpressionNet.loadFromUri('/model/emotion-classifier/model.json');
+            try {
+                await faceapi.nets.tinyFaceDetector.loadFromUri('/model/face-detector/model.json');
+                await faceapi.nets.faceExpressionNet.loadFromUri('/model/emotion-classifier/model.json');
+                this.model = await tf.loadLayersModel('/model/emotion-classifier/modelA.json');
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.log("Error loading models")
+            }
             this.loading = false;
             this.detect();
             // eslint-disable-next-line no-console
