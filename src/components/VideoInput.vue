@@ -38,21 +38,40 @@
                 if(this.videoEl.paused || this.videoEl.ended || !(faceapi.nets.tinyFaceDetector.params))
                     return setTimeout(() => this.detect());
 
-                const options = new faceapi.TinyFaceDetectorOptions();
                 if(this.started) {
-
+                      let res;
+                      const currentFrame = this.getScreenshot(document.getElementById("webcam"));
+                      const detections = await faceapi.detectAllFaces(
+                              currentFrame,
+                              new faceapi.TinyFaceDetectorOptions()
+                      );
+                      if (detections) {
+                        const croppedFaces = await faceapi.extractFaces(currentFrame, detections);
+                        if (croppedFaces[0]) {
+                          const croppedFaceResized = tf.image.resizeBilinear(tf.browser.fromPixels(croppedFaces[0], 1),
+                                                                        [48, 48]
+                          ).reshape([1, 48, 48, 1]);
+                          res = this.model.predict(croppedFaceResized).reshape([7]);
+                          this.cachedResults.push(res);
+                          this.$emit("onResult", this.pooledResult);
+                        }
+                      }
                 } else {
-                    const result = await faceapi.detectSingleFace(this.videoEl, options).withFaceExpressions();
-                    if (result) {
-                        const dims = faceapi.matchDimensions(this.canvas, this.videoEl, true);
-                        const resizedResult = faceapi.resizeResults(result, dims);
-                        faceapi.draw.drawDetections(this.canvas, resizedResult);
-                        this.cachedResults.push(result.expressions);
-                        this.$emit("onResult", this.pooledResult);
-                    }
+                    this.start();
                 }
 
                 setTimeout(() => this.detect());
+            },
+            start: async function() {
+                const options = new faceapi.TinyFaceDetectorOptions();
+                const result = await faceapi.detectSingleFace(this.videoEl, options).withFaceExpressions();
+                if (result) {
+                    const dims = faceapi.matchDimensions(this.canvas, this.videoEl, true);
+                    const resizedResult = faceapi.resizeResults(result, dims);
+                    faceapi.draw.drawDetections(this.canvas, resizedResult);
+                    this.cachedResults.push(result.expressions);
+                    this.$emit("onResult", this.pooledResult);
+                }
             }
         },
         async mounted() {
