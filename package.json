@@ -18,7 +18,7 @@
     "vue-chartjs": "^3.5.0",
     "vue-loading-overlay": "^3.3.2",
     "vue-web-cam": "^1.9.0",
-    "vuetify": "^2.2.11"
+    "vuetify": "^2.6.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.0",
